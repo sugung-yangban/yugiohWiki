@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>덱빌딩</title>
+  </head>
+  <link th:href="@{/css/build.css}" rel="stylesheet" />
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}"
+          ><img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />WikiMain</a
+        >
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <div class="builder-container">
+      <div class="card-pool-area">
+        <div class="pool-header">
+          전체 카드 목록(클릭하여 추가)
+          <form
+            th:action="@{/deck/build}"
+            method="get"
+            id="searchForm"
+            class="filter-toolbar"
+          >
+            <input type="hidden" name="page" id="pageInput" value="0" />
+            <input
+              type="hidden"
+              name="sort"
+              id="sortInput"
+              th:value="${sort}"
+            />
+            <input
+              type="text"
+              name="keyword"
+              th:value="${keyword}"
+              placeholder="카드명 검색"
+              class="search-input"
+            />
+            <select
+              name="race"
+              class="filter-select"
+              onchange="this.form.submit()"
+            >
+              <option value="all" th:selected="${race == 'all' or race== null}">
+                종족 전체
+              </option>
+              <option value="드래곤족" th:selected="${race == '드래곤족'}">
+                드래곤족
+              </option>
+              <option value="전사족" th:selected="${race == '전사족'}">
+                전사족
+              </option>
+              <option value="악마족" th:selected="${race == '악마족'}">
+                악마족
+              </option>
+              <option value="물족" th:selected="${race == '물족'}">물족</option>
+              <option value="마법사족" th:selected="${race == '마법사족'}">
+                마법사족
+              </option>
+              <option value="기계족" th:selected="${race == '기계족'}">
+                기계족
+              </option>
+              <option value="야수족" th:selected="${race == '야수족'}">
+                야수족
+              </option>
+              <option value="언데드족" th:selected="${race == '언데드족'}">
+                언데드족
+              </option>
+              <option value="천사족" th:selected="${race == '천사족'}">
+                천사족
+              </option>
+              <option value="곤충족" th:selected="${race == '곤충족'}">
+                곤충족
+              </option>
+              <option value="비행야수족" th:selected="${race == '비행야수족'}">
+                비행야수족
+              </option>
+              <option value="식물족" th:selected="${race == '식물족'}">
+                식물족
+              </option>
+              <option value="어류족" th:selected="${race == '어류족'}">
+                어류족
+              </option>
+              <option value="야수전사족" th:selected="${race == '야수전사족'}">
+                야수전사족
+              </option>
+              <option value="번개족" th:selected="${race == '번개족'}">
+                번개족
+              </option>
+              <option value="화염족" th:selected="${race == '화염족'}">
+                화염족
+              </option>
+              <option value="공룡족" th:selected="${race == '공룡족'}">
+                공룡족
+              </option>
+              <option value="파충류족" th:selected="${race == '파충류족'}">
+                파충류족
+              </option>
+              <option value="해룡족" th:selected="${race == '해룡족'}">
+                해룡족
+              </option>
+            </select>
+            <select
+              name="element"
+              class="filter-select"
+              onchange="this.form.submit()"
+            >
+              <option
+                value="all"
+                th:selected="${element=='all' or element == null}"
+              >
+                속성 전체
+              </option>
+              <option value="地" th:selected="${element=='地'}">地</option>
+              <option value="闇" th:selected="${element=='闇'}">闇</option>
+              <option value="水" th:selected="${element=='水'}">水</option>
+              <option value="光" th:selected="${element=='光'}">光</option>
+              <option value="風" th:selected="${element=='風'}">風</option>
+              <option value="炎" th:selected="${element=='炎'}">炎</option>
+            </select>
+            <select
+              name="level"
+              class="filter-select"
+              onchange="this.form.submit()"
+            >
+              <option
+                value="all"
+                th:selected="${level == 'all' or level == null}"
+              >
+                레벨/랭크 전체
+              </option>
+              <option
+                th:each="i : ${#numbers.sequence(0,12)}"
+                th:value="${i}"
+                th:text="|Lv/Rank ${i}|"
+                th:selected="${level != null and level != 'all' and i == T(java.lang.Integer).parseInt(level)}"
+              ></option>
+            </select>
+            <select
+              name="cardtype"
+              class="filter-select"
+              onchange="this.form.submit()"
+            >
+              <option
+                value="all"
+                th:selected="${cardtype == 'all' or cardtype == null}"
+              >
+                카드 종류
+              </option>
+              <option value="Monster" th:selected="${cardtype == 'Monster'}">
+                몬스터
+              </option>
+              <option value="Magic" th:selected="${cardtype == 'Magic'}">
+                마법
+              </option>
+              <option value="Trap" th:selected="${cardtype == 'Trap'}">
+                함정
+              </option>
+            </select>
+            <select
+              name="type"
+              class="filter-select"
+              onchange="this.form.submit()"
+            >
+              <option
+                value="all"
+                th:selected="${type == 'all' or type == null}"
+              >
+                몬스터 종류
+              </option>
+              <option value="normal" th:selected="${type == 'normal'}">
+                일반
+              </option>
+              <option value="effect" th:selected="${type == 'effect'}">
+                효과
+              </option>
+              <option value="fusion" th:selected="${type == 'fusion'}">
+                융합
+              </option>
+              <option value="ritual" th:selected="${type == 'ritual'}">
+                의식
+              </option>
+              <option value="synchro" th:selected="${type == 'synchro'}">
+                싱크로
+              </option>
+              <option value="xyz" th:selected="${type == 'xyz'}">엑시즈</option>
+              <option value="link" th:selected="${type == 'link'}">링크</option>
+              <option value="toon" th:selected="${type == 'toon'}">툰</option>
+            </select>
+            <button
+              type="button"
+              class="sort-btn"
+              th:classappend="${sort=='atk_desc' or sort=='atk_asc'} ? 'active'"
+              onclick="toggleSort('atk')"
+            >
+              ATK
+              <span class="sort-icon" th:if="${sort=='atk_desc'}">▼</span>
+              <span class="sort-icon" th:if="${sort=='atk_asc'}">▲</span>
+              <span
+                class="sort-icon"
+                th:unless="${sort=='atk_desc' or sort == 'atk_asc'}"
+                >--</span
+              >
+            </button>
+            <button
+              type="button"
+              class="sort-btn"
+              th:classappend="${sort=='def _desc' or sort=='def_asc'} ? 'active'"
+              onclick="toggleSort('def')"
+            >
+              Def
+              <span class="sort-icon" th:if="${sort=='def_desc'}">▼</span>
+              <span class="sort-icon" th:if="${sort=='def_asc'}">▲</span>
+              <span
+                class="sort-icon"
+                th:unless="${sort=='def_desc' or sort == 'def_asc'}"
+                >--</span
+              >
+            </button>
+          </form>
+        </div>
+
+        <div class="card-grid" id="searchResultArea">
+          <div
+            th:each="card: ${paging.content}"
+            class="card-item"
+            th:data-name="${card.cardname}"
+            th:data-id="${card.id}"
+            th:data-atk="${card.atk}"
+            th:data-def="${card.def}"
+            th:data-card-number="${card.cardNumber}"
+            th:data-card-type="${card.type}"
+            th:onclick="handleCardClick(this)"
+          >
+            <a
+              th:href="@{/showme/searchResult(cardname=${card.cardname})}"
+              class="card-info-btn"
+              onclick="event.stopPropagation()"
+              title="상세 정보 보기"
+            >
+              🔍
+            </a>
+            <img
+              th:src="@{|https://images.ygoprodeck.com/images/cards/${card.cardNumber}.jpg|}"
+              class="card-img"
+              alt="카드 이미지"
+              th:onerror="|this.src = '@{/img/card_back.png}'|"
+            />
+            <div class="card-name" th:text="${card.cardname}">카드명</div>
+            <div class="card-stats" th:if="${card.atk != null}">
+              <span class="stat-atk" th:text="|공격력: ${card.atk}|">
+                공격력: 1000
+              </span>
+              <span class="stat-def" th:text="|수비력: ${card.def}|">
+                수비력: 1000
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="pagination-area"
+          th:if="${paging != null && paging.totalPages > 0}"
+        >
+          <a
+            th:classappend="${paging.first} ? 'disabled'"
+            th:href="@{/deck/build(page=${paging.number - 1}, keyword=${keyword}, race=${race}, element=${element}, sort=${sort}, cardtype=${cardtype}, type=${type})}"
+            class="page-btn"
+          >
+            &lt;
+          </a>
+
+          <span>
+            <span th:text="${paging.number + 1}">1</span> /
+            <span th:text="${paging.totalPages}">10</span>
+          </span>
+
+          <a
+            th:classappend="${paging.last} ? 'disabled'"
+            th:href="@{/deck/build(page=${paging.number+1}, keyword=${keyword}, race=${race}, element=${element}, sort=${sort}, cardtype=${cardtype}, type=${type})}"
+            class="page-btn"
+          >
+            &gt;
+          </a>
+          <div class="page-jump-box">
+            <input
+              type="number"
+              id="jumpPageVal"
+              min="1"
+              th:max="${paging.totalPages}"
+              placeholder="Go"
+              onkeypress="if (event.key === 'Enter') jumpToPage();"
+            />
+            <button type="button" class="jump-btn" onclick="jumpToPage()">
+              이동
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="my-deck-area">
+        <div class="deck-header">
+          <div class="header-right-group">
+            <button
+              type="button"
+              onclick="showDeckInGrid()"
+              class="btn-preview"
+            >
+              이미지화
+            </button>
+            <button type="button" class="save-btn" onclick="saveDeck()">
+              저장
+            </button>
+            <button type="button" class="reset-btn" onclick="resetDeck()">
+              초기화
+            </button>
+          </div>
+        </div>
+        <div class="deck-content-wrapper" style="padding: 10px 20px">
+          <div class="deck-section">
+            <div class="section-title">
+              메인 덱
+              <span id="main-deck-count" class="count-badge count-main"
+                >(0)</span
+              >
+              <span class="count-limit"> /60장</span>
+            </div>
+            <div class="deck-grid main-deck-grid" id="deck-list">
+              <div class="empty-msg" id="empty-msg">카드를 선택해주세요</div>
+            </div>
+          </div>
+          <hr class="deck-divider" />
+          <div class="deck-section">
+            <div class="section-title">
+              엑스트라 덱
+              <span id="extra-deck-count" class="count-badge count-extra"
+                >(0)</span
+              >
+              <span class="count-limit">/15장</span>
+            </div>
+            <div class="deck-grid extra-deck-grid" id="extra-deck-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+
+  <script th:src="@{/js/build.js}"></script>
+  <script th:inline="javascript">
+    const loadedDeckData = [[${loadedDeck}]];
+  </script>
+</html>

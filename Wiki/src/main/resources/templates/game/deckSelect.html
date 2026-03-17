@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>듀얼</title>
+    <link th:href="@{/css/deckSelect.css}" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}">
+          <img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />
+          WikiMain
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <div class="container">
+      <h1>Duel Preparation</h1>
+      <div class="section-title">사용할 덱을 선택해주세요</div>
+      <div
+        th:if="${#lists.isEmpty(myDecks)}"
+        style="margin-bottom: 30px; color: #999"
+      >
+        <p>저장된 덱이 없습니다. 덱을 먼저 저장해주세요</p>
+        <a href="/deck/build" style="color: #ffcc00">덱 만들러 가기</a>
+      </div>
+      <div
+        class="deck-grid"
+        id="deckList"
+        th:unless="${#lists.isEmpty(myDecks)}"
+      >
+        <div
+          th:each="deck : ${myDecks}"
+          class="deck-card"
+          th:onclick="selectDeck([[${deck.deckId}]], this)"
+        >
+          <div class="deck-name" th:text="${deck.deckName}">덱 이름</div>
+          <div
+            class="deck-info"
+            th:text="|작성일: ${#temporals.format(deck.createdDate, 'yyyy-MM-dd')}|"
+          >
+            날짜
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">CPU 난이도 선택</div>
+      <div class="difficulty-area">
+        <div class="diff-btn" onclick="selectDifficulty('Easy', this)">
+          쉬움
+        </div>
+        <div
+          class="diff-btn selected"
+          onclick="selectDifficulty('Normal', this)"
+        >
+          보통
+        </div>
+        <div class="diff-btn" onclick="selectDifficulty('Hard', this)">
+          어려움
+        </div>
+      </div>
+
+      <button class="start-btn" id="btnStart" onclick="startGame()" disabled>
+        듀얼 시작!
+      </button>
+    </div>
+  </body>
+  <script>
+    let selectedDeckId = null;
+    let selectedDifficulty = "Normal";
+
+    function selectDeck(deckId, element) {
+      selectedDeckId = deckId;
+
+      $(".deck-card").removeClass("selected");
+      $(element).addClass("selected");
+
+      checkReady();
+    }
+    function selectDifficulty(diff, element) {
+      selectedDifficulty = diff;
+
+      $(".diff-btn").removeClass("selected");
+      $(element).addClass("selected");
+    }
+    function checkReady() {
+      if (selectedDeckId != null) {
+        $("#btnStart").prop("disabled", false);
+      }
+    }
+    function startGame() {
+      if (!selectedDeckId) {
+        alert("덱을 선택해 주세요!");
+        return;
+      }
+
+      const data = {
+        deckId: selectedDeckId,
+        difficulty: selectedDifficulty,
+      };
+
+      $.ajax({
+        url: "/Wiki/game/start",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+          alert("듀얼을 시작합니다!");
+          location.href = "/Wiki/game/room?roomId=" + response.roomId;
+        },
+        error: function (xhr) {
+          alert("게임 시작 실패: " + xhr.responseText);
+        },
+      });
+    }
+  </script>
+</html>

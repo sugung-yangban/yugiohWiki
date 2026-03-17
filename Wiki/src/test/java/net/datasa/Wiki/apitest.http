@@ -1,0 +1,2 @@
+Delete http://localhost:1114/Wiki/board/api/delete?boardId=16
+Content-Type: application/json

@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>마이페이지</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 10px 30px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .logo-area a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-img {
+      height: 60px;
+      margin-right: 10px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-item {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    .nav-item:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+    .site-footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .copyright {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+    .mypage-card {
+      background-color: white;
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .profile-icon {
+      width: 80px;
+      height: 80px;
+      background-color: #e0e0e0;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid #ddd;
+      margin: 0 auto 20px auto;
+      display: block;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    .welcome-title {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+    .user-id-highlight {
+      color: #4caf50;
+    }
+    .description {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .deck-list-section {
+      text-align: left;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .deck-list-title{
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .no-deck-msg{
+      text-align: center;
+      color: #666;
+      line-height: 1.6;
+    }
+    .link-create-deck{
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link-create-deck:hover{
+      text-decoration: underline;
+    }
+    .deck-list{
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0 0 ;
+      width: 100%;
+    }
+    .deck-item:hover{
+      background-color: #f0f8ff;
+      border-color: #007bff;
+      transform: translateY(-2px);
+    }
+    .deck-name{
+      display: block;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .deck-date{
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .divider {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 30px;
+    }
+    .btn-logout {
+      display: inline-block;
+      background-color: #d9534f;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .btn-logout:hover {
+      background-color: #c9302c;
+    }
+    .profile-upload-form{
+      margin-top: 15px;
+      text-align: center;
+    }
+    .upload-box{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px
+    }
+    .file-input{
+      font-size: 14px;
+      color: #555;
+      padding: 5px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 200px;
+    }
+    .file-input::file-selector-button{
+      border:none;
+      background: #eee;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 10px;
+      transition: 0.2s;
+    }
+    .btn-upload{
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .btn-upload:hover{
+      background-color:#0056b3;
+      transform: translateY(-1px);
+    }
+    .delete-btn{
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 10px;
+      margin-left: 10px;
+      transition: color 0.2s;
+    }
+    .delete-btn:hover{
+      color: #ff4d4d;
+    }
+    .deck-item-container{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      margin-bottom: 8px;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      transition: all 0.2s
+    }
+    .deck-item-container:hover{
+      background-color: #f0f8ff;
+      border-color: #007bff;
+      transform: translateY(-2px);
+    }
+    .deck-link{
+      flex-grow: 1;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}"
+          ><img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />WikiMain</a
+        >
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}"class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main>
+      <div class="mypage-card">
+        <img th:if="${wikimember.profileImage != null}" class="profile-icon" th:src="@{|/upload/${wikimember.profileImage}|}" alt="프로필 이미지"></img>
+        <img th:unless="${wikimember .profileImage != null}" class="profile-icon" th:src="@{/img/default_profile.png}" alt="기본 이미지">
+
+        <form th:action="@{/user/updateProfile}" method="post" enctype="multipart/form-data" class="profile-upload-form">
+          <div class="upload-box">
+            <input type="file" name="upload" accept="image/*" class="file-input" required>
+            <button type="submit" class="btn-upload">변경</button>
+          </div>
+        </form>
+
+        <h1 class="welcome-title">
+          <span class="user-id-highlight" th:text="${loginUser}"
+            >User</span
+          >님,<br />
+          환영합니다!
+        </h1>
+
+        <div class="description deck-list-section">
+          <h3 class="deck-list-title">내 덱 리스트</h3>
+          <p th:if="${#lists.isEmpty(myDeckList)}" class="no-deck-msg">
+            저장된 덱이 없습니다 <br>
+            <a th:href="@{/deck/build}" class="link-create-deck"> 나만의 덱을 만들어 보세요 ! </a>
+          </p>
+
+          <ul th:unless="${#lists.isEmpty(myDeckList)}" class="deck-list">
+            <li th:each="deck : ${myDeckList}" class="deck-item-container">
+            <a  th:href="@{/deck/build(deckId=${deck.deckId})}" class="deck-link">
+              <div class="deck-info">
+                <span th:text="${deck.deckName}" class="deck-name" style="font-weight: bold;">덱 이름</span>
+                </div>
+                <div>
+                <small th:text="${#temporals.format(deck.createdDate, 'yyyy-MM-dd HH:mm')}" style="color: #999; font-size:0.8rem;" class="deck-date">날짜</small>
+                <span style="margin-left:5px; color: #ccc;">&gt;</span>  
+              </div>
+            </a>
+            <button type="button" class="delete-btn" th:onclick="'deleteDeck('+ ${deck.deckId} + ')'" title="덱 삭제">&times;</button>
+            </li>
+          </ul>
+        </div>
+
+        <hr class="divider" />
+
+        <a th:href="@{/user/logout}" class="btn-logout">로그아웃</a>
+        <form th:action="@{/user/deleteMember}" method="POST" onsubmit="return confirm('정말로 탈퇴하시겠습니까? 작성하신 덱 등 모든 데이터가 삭제되며 복구할 수 없습니다.');" style="display: inline-block; margin-top: 20px;">
+          <button type="submit" style="padding: 10px 20px; background-color: #ff4444; color: white; border: none; border-radius: 5px; cursor:pointer; font-weight: bold; transition: background-color 0.2s">
+            회원탈퇴
+          </button>
+        </form>
+      </div>
+
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      function deleteDeck(deckId){
+        if (!confirm("삭제 하시겠습니까?")){
+          return;
+        }
+
+        fetch('/Wiki/user/delete?deckId=' + deckId, {
+          method: "POST"
+        })
+        .then(response =>{
+          if(response.ok){
+            location.reload();
+          } else {
+            return response.text().then(text => {
+              throw new Error(text)
+            });
+          }
+        })
+        .catch(error => {
+          alert("삭제 실패: " + error.message);
+        })
+      }
+    </script>
+  </body>
+</html>

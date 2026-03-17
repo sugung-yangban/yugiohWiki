@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원가입</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans KR", sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+      }
+      .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #333;
+        padding: 10px 30px;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .logo-area a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .logo-img {
+        height: 60px;
+        margin-right: 10px;
+      }
+      .nav-menu {
+        display: flex;
+        gap: 20px;
+      }
+      .nav-item {
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: 0.3s;
+      }
+      .nav-item:hover {
+        background-color: #555;
+        color: #ffcc00;
+      }
+      .site-footer {
+        background-color: #333;
+        color: #ccc;
+        padding: 30px 0;
+        text-align: center;
+        margin-top: auto;
+      }
+      .copyright {
+        font-size: 0.8rem;
+        color: #777;
+      }
+      .join-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 20px;
+      }
+      .join-container {
+        background-color: white;
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+      .join-container h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-weight: 700;
+      }
+      .from-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #555;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+      }
+      input[type="text"]:focus,
+      input[type="password"]:focus {
+        border-color: #4a90e2;
+        outline: none;
+      }
+      .id-row {
+        display: flex;
+        gap: 10px;
+      }
+      .id-row input {
+        flex: 1;
+        background-color: #f9f9f9;
+        cursor: default;
+      }
+      .check-btn {
+        padding: 0 15px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        transition: background-color 0.2s;
+      }
+      .check-btn:hover {
+        background-color: #5a6268;
+      }
+      .msg-box {
+        margin-top: 5px;
+        font-size: 0.85rem;
+        height: 18px;
+      }
+      .btn-area {
+        margin-top: 30px;
+        display: flex;
+        gap: 10px;
+      }
+      .btn-area button {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2;
+      }
+      .submit-btn {
+        background-color: #4a90e2;
+        color: white;
+      }
+      .submit-btn:hover {
+        background-color: #357abd;
+      }
+      .submit-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .reset-btn {
+        background-color: #f1f3f5;
+        color: #333;
+      }
+      .reset-btn:hover {
+        background-color: #e9ecef;
+      }
+    </style>
+    <script>
+      function openIdCheck() {
+        window.open(
+          "/Wiki/user/idCheck",
+          "idCheckWindow",
+          "width=400,height=300,left=200,top=200",
+        );
+      }
+      function checkPassword() {
+        const pw1 = document.getElementById("memberPassword").value;
+        const pw2 = document.getElementById("memberPassword2").value;
+        const msg = document.getElementById("pwCheckMsg");
+        const submitBtn = document.getElementById("submitBtn");
+
+        if (pw1 === "" && pw2 === "") {
+          msg.innerText = "";
+          submitBtn.disabled = true;
+          return;
+        }
+
+        if (pw1 === pw2) {
+          msg.innerText = "비밀번호가 일치합니다";
+          msg.style.color = "blue";
+          submitBtn.disabled = false;
+        } else {
+          msg.innerText = "비밀번호가 일치하지 않습니다.";
+          msg.style.color = "red";
+          submitBtn.disabled = true;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}"
+          ><img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />WikiMain</a
+        >
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <div class="join-wrapper">
+      <div class="join-container">
+        <h2>회원가입</h2>
+        <form th:action="@{register}" method="post">
+          <div class="form-group">
+            <label for="memberId">아이디</label>
+            <div class="id-row">
+              <input
+                type="text"
+                id="memberId"
+                name="memberId"
+                placeholder="ID중복확인 이용"
+                readonly
+              />
+              <input
+                type="button"
+                id="openButton"
+                value="ID중복확인"
+                onclick="openIdCheck()"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="memberPassword">비밀번호</label>
+            <input
+              type="password"
+              id="memberPassword"
+              name="memberPassword"
+              required
+              oninput="checkPassword()"
+              placeholder="비밀번호를 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label for="memberPassword2">비밀번호확인</label>
+            <input
+              type="password"
+              id="memberPassword2"
+              name="memberPassword2"
+              required
+              oninput="checkPassword()"
+              placeholder="비밀번호를 다시 입력하세요"
+            />
+            <div id="pwCheckMsg" class="msg-box"></div>
+          </div>
+          <div class="btn-area">
+            <button type="submit" id="submitBtn" disabled>제출</button>
+            <button type="reset">리셋</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

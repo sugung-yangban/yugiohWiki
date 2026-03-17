@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로그인</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 10px 30px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .logo-area a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-img {
+      height: 60px;
+      margin-right: 10px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-item {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    .nav-item:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+    .site-footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .copyright {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    .login-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      margin: 50px auto;
+    }
+    .registerform {
+      cursor: pointer;
+      text-align: center;
+    }
+    .input-field {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .login-btn {
+      width: 96%;
+      padding: 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .login-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}"
+          ><img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />WikiMain</a
+        >
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main>
+      <div class="login-container">
+        <h1>로그인</h1>
+        <p th:if="${param.error}" style="color: red; font-size: 0.9rem">
+          아이디 혹은 비밀번호가 틀렸습니다.
+        </p>
+        <form th:action="@{/user/login}" method="post">
+          <input
+            type="text"
+            name="id"
+            class="input-field"
+            placeholder="아이디"
+            required
+          />
+          <input
+            type="password"
+            name="pw"
+            class="input-field"
+            placeholder="비밀번호"
+            required
+          />
+          <input type="submit" value="로그인" class="login-btn" />
+        </form>
+        <p class="registerform"><a th:href="@{register}">회원가입</a></p>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

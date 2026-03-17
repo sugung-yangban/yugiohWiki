@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시판</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}">
+          <img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />
+          WikiMain
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main class="board-container">
+      <div class="board-header">
+        <h2>듀얼리스트 게시판</h2>
+        <p>자유로운 이야기 가능</p>
+      </div>
+
+      <div class="board-list-wrapper">
+        <table class="board-table">
+          <thead>
+            <tr>
+              <th class="th-num">번호</th>
+              <th class="th-title">제목</th>
+              <th class="th-writer">작성자</th>
+              <th class="th-date">작성일</th>
+              <th class="th-views">조회</th>
+              <th class="th-recommend">추천수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${#lists.isEmpty(boardList)}">
+              <td colspan="5" class="empty-msg">등록된 게시글이 없습니다.</td>
+            </tr>
+            <tr th:each="board : ${boardList}">
+              <td th:text="${board.boardId}">1</td>
+              <td class="td-title">
+                <a
+                  th:href="@{/board/read(boardId=${board.boardId})}"
+                  th:text="${board.title}"
+                >
+                  게시글 제목 예시
+                </a>
+              </td>
+              <td th:text="${board.writer}">작성자명</td>
+              <td
+                th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd')}"
+              >
+                날짜
+              </td>
+              <td th:text="${board.viewCount}">조회</td>
+              <td th:text="${board.likeCount}">추천수</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="board-footer">
+        <div class="pagination">
+          <a href="#" class="page-btn">&lt;</a>
+          <a href="#" class="page-btn active">1</a>
+          <a href="#" class="page-btn">2</a>
+          <a href="#" class="page-btn">3</a>
+          <a href="#" class="page-btn">&gt;</a>
+        </div>
+
+        <div class="btn-area">
+          <a th:href="@{/board/write}" class="write-btn">글쓰기</a>
+        </div>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

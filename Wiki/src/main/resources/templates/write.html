@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>글쓰기</title>
+    <link rel="stylesheet" th:href="@{/css/write.css}" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}">
+          <img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />
+          WikiMain
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main class="board-container">
+      <div class="write-body">
+        <div class="board-header">
+          <h2>게시글 작성</h2>
+          <p>공유할 이야기를 적어보세요</p>
+        </div>
+        <form
+          th:action="@{/board/write}"
+          method="post"
+          enctype="multipart/form-data"
+          class="write-form"
+        >
+          <div class="form-group">
+            <input
+              type="text"
+              name="title"
+              class="input-title"
+              placeholder="제목을 입력하세요"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <textarea
+              name="content"
+              id="summernote"
+              class="input-content"
+              placeholder="내용을 자유롭게 작성하세요"
+            ></textarea>
+          </div>
+          <div class="form-group file-group">
+            <label for="uploadFile" class="file-label"
+              >파일첨부(사진/동영상 및 파일)</label
+            >
+            <input
+              type="file"
+              name="uploadFile"
+              multiple
+              id="uploadFile"
+              class="input-file"
+              onchange="checkFileCount(this)"
+            />
+            <small style="color: #666; margin-top: 5px; display: block">
+              최대 20개까지 업로드 가능합니다
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="deckSelect">덱 첨부</label>
+            <select name="deckId" id="deckSelect" class="input-field">
+              <option value="">--덱을 선택하지않음--</option>
+              <option
+                th:each="deck : ${myDecks}"
+                th:value="${deck.deckId}"
+                th:text="|${deck.deckName} (작성일: ${#temporals.format(deck.createdDate,'yyyy-MM-dd')})|"
+              >
+                덱이름
+              </option>
+            </select>
+          </div>
+          <div class="btn-area">
+            <a th:href="@{/board/list}" class="cancel-btn">취소</a>
+            <button type="submit" class="submit-btn">등록하기</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-widget">
+        <h3>카드 도감</h3>
+        <input
+          type="text"
+          id="cardSearch"
+          placeholder="카드 이름 검색은 여기에"
+          onkeyup="filterCards()"
+        />
+        <div id="cardListContainer" class="widget-card-grid">
+          <div
+            th:each="card : ${cardList}"
+            class="widget-card-item"
+            th:onmousedown="addCardImage([[${card.cardname}]], [[${card.cardNumber}]]); event.preventDefault();"
+            th:title="${card.cardname}"
+          >
+            <img
+              th:src="@{|https://images.ygoprodeck.com/images/cards/${card.cardNumber}.jpg|}"
+              class="widget-card-img"
+              th:onerror="|this.src='@{/img/card_back.png}'|"
+              alt="카드"
+            />
+            <div class="widget-card-info">
+              <div class="widget-card-name" th:text="${card.cardname}">
+                카드이름
+              </div>
+              <div
+                class="widget-card-stats"
+                th:if="${card.atk != null and card.atk != ''}"
+              >
+                <span class="stat-atk" th:text="|ATK ${card.atk}|">ATK</span>
+                <span class="stat-def" th:text="|DEF ${card.def}|">DEF</span>
+              </div>
+            </div>
+            <div class="click-overlay">ADD</div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script>
+      $(document).ready(function () {
+        $("#summernote").summernote({
+          height: 400,
+          lang: "ko-KR",
+          placeholder: "내용을 입력하고, 오른쪽에서 카드를 클릭해보세요!",
+          toolbar: [
+            ["style", ["bold", "italic", "underline", "clear"]],
+            ["insert", ["picture", "link"]],
+            ["view", ["codeview"]],
+          ],
+        });
+      });
+      function checkFileCount(input) {
+        if (input.files.length > 20) {
+          alert("파일은 20개까지만 업로드 가능합니다");
+          input.value = "";
+        }
+      }
+      function addCardImage(cardname, cardNumber) {
+        const imgSrc = cardNumber
+          ? `https://images.ygoprodeck.com/images/cards/${cardNumber}.jpg`
+          : "/img/card_back.png";
+        const imgTag = `<img src="${imgSrc}" style="width:150px; margin:10px;" alt="${cardname}">`;
+
+        $("#summernote").summernote("insertImage", imgSrc, function ($image) {
+          $image.css("width", "150px");
+          $image.attr("alt", cardname);
+          $image.addClass("inserted-card-img");
+        });
+      }
+      function filterCards() {
+        const input = document.getElementById("cardSearch");
+        const filter = input.value.toUpperCase();
+        const items = document.getElementsByClassName("widget-card-item");
+
+        for (let i = 0; i < items.length; i++) {
+          const nameElement =
+            items[i].getElementsByClassName("widget-card-name")[0];
+          const nameText = nameElement.textContent || nameElement.innerText;
+
+          if (nameText.toUpperCase().indexOf(filter) > -1) {
+            items[i].style.display = "";
+          } else {
+            items[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

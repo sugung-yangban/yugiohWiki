@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>검색결과</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 10px 30px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .logo-area a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-img {
+      height: 60px;
+      margin-right: 10px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-item {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    .nav-item:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+    .site-footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .copyright {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    main {
+      flex: 1;
+      padding: 50px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      text-align: center;
+    }
+    .result-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 50px;
+      max-width: 1200px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    .image-area {
+      flex: 0 0 350px;
+    }
+    .card-img-large {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3s);
+      transition: transform 0.3s ease;
+    }
+    .card-img-large:hover {
+      transform: scale(1.02);
+    }
+    .info-area {
+      flex: 1;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      padding: 18px 25px;
+      border-bottom: 1px solid #eee;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #f9f9f9;
+      width: 30%;
+      color: #555;
+      font-weight: bold;
+      text-align: center;
+      border-right: 1px solid #eee;
+    }
+    td {
+      color: #333;
+    }
+    tr:last-child th,
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .btn {
+      padding: 12px 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      text-align: center;
+    }
+    .btn-primary {
+      background-color: #4caf50;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+    .btn-secondary {
+      background-color: #888;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background-color: #666;
+    }
+    .no-result {
+      text-align: center;
+      padding: 50px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      color: #777;
+    }
+  </style>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}">
+          <img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />
+          WikiMain
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main>
+      <div
+        th:if="${response}"
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        "
+      >
+        <h1>검색 결과</h1>
+        <div class="result-container">
+          <div class="image-area">
+            <img
+              th:src="@{|https://images.ygoprodeck.com/images/cards/${response.cardNumber}.jpg|}"
+              class="card-img-large"
+              alt="카드 이미지"
+              onerror="this.src = '/img/card_back.png'"
+            />
+          </div>
+          <table th:object="${response}">
+            <tr>
+              <th>카드 아이디</th>
+              <td th:text="*{id}"></td>
+            </tr>
+            <tr>
+              <th>카드 번호</th>
+              <td th:text="*{cardid}"></td>
+            </tr>
+            <tr>
+              <th>카드 명</th>
+              <td
+                th:text="*{cardname}"
+                style="font-weight: bold; font-size: 1.1rem; color: #000"
+              ></td>
+            </tr>
+            <tr>
+              <th>레어도</th>
+              <td th:text="*{rarity}"></td>
+            </tr>
+            <tr>
+              <th>공격력 / 수비력</th>
+              <td>
+                <span th:text="*{atk}"></span> / <span th:text="*{def}"></span>
+              </td>
+            </tr>
+            <tr>
+              <th>텍스트</th>
+              <td th:text="*{text}" style="line-height: 1.6"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div th:unless="${response}" class="no-result">
+        <h2 style="color: #d9534f">검색 결과가 없습니다</h2>
+        <p>입력하신 이름과 정확히 일치하는 카드를 찾을 수 없습니다.</p>
+      </div>
+      <div class="btn-group">
+        <a th:href="@{/showme/search}" class="btn btn-secondary"
+          >다시 검색하기</a
+        >
+        <a th:href="@{/showme/selectAll}" class="btn btn-primary">목록으로</a>
+        <a th:href="@{/deck/build}" class="btn btn-primary">덱 조합으로</a>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

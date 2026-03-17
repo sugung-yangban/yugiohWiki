@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>조회하기</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Noto Sans KR", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 10px 30px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .logo-area a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-img {
+      height: 60px;
+      margin-right: 10px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-item {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    .nav-item:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .search-container {
+      background-color: white;
+      padding: 50px;
+      border-radius: 5px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+    .search-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .search-input {
+      width: 70%;
+      padding: 15px;
+      font-size: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .search-input:focus {
+      border-color: #4caf50;
+    }
+    .search-btn {
+      padding: 15px 25px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .search-btn:hover {
+      background-color: #45a049;
+    }
+    .site-footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .copyright {
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}"
+          ><img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />WikiMain</a
+        >
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+    <main>
+      <div class="search-container">
+        <p style="margin-bottom: 30px; color: #666">
+          검색이 필요한 카드 이름을 입력해주세요
+        </p>
+        <form
+          th:action="@{/showme/searchResult}"
+          method="get"
+          class="serach-form"
+        >
+          <input
+            type="text"
+            name="cardname"
+            class="serach-input"
+            placeholder="카드명"
+            required
+          />
+          <input type="submit" value="조회" class="search-btn" />
+        </form>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

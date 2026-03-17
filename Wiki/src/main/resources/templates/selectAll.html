@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수록목록 확인</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f9f9f9;
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 10px 30px;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .logo-area a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-img {
+      height: 60px;
+      margin-right: 10px;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-item {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+    .nav-item:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .table-container {
+      overflow-x: auto;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1600px;
+    }
+    th,
+    td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #4caf50;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      cursor: pointer;
+    }
+    th a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      height: 100%;
+    }
+    th a:hover {
+      text-decoration: underline;
+    }
+    .text-col {
+      white-space: normal;
+      min-width: 300px;
+      text-align: left;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tbody tr:hover {
+      background-color: #e9f5e9;
+      cursor: pointer;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .site-footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 30px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    .copyright {
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <a th:href="@{/}">
+          <img
+            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
+            alt="로고"
+            class="logo-img"
+          />
+          WikiMain
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a th:href="@{/game/select}" class="nav-item">! 듀얼 시작 !</a>
+        <a th:href="@{/board/list}" class="nav-item">게시판</a>
+        <a th:href="@{/showme/selectAll}" class="nav-item">전체 카드 확인</a>
+        <a th:href="@{/showme/search}" class="nav-item">카드 검색</a>
+        <a th:href="@{/deck/build}" class="nav-item">덱 구성해보기</a>
+        <a th:href="@{/user/mypage}" class="nav-item">마이페이지</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='packname', sortDir=${reverseSortDir})}"
+                >
+                  팩 이름
+                  <span
+                    th:if="${sortField == 'packname'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='id', sortDir=${reverseSortDir})}"
+                >
+                  DB ID
+                  <span
+                    th:if="${sortField == 'id'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='cardid', sortDir=${reverseSortDir})}"
+                >
+                  카드 ID
+                  <span
+                    th:if="${sortField == 'cardid'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='rarity', sortDir=${reverseSortDir})}"
+                >
+                  레어도
+                  <span
+                    th:if="${sortField == 'rarity'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>카드 타입</th>
+              <th>타입</th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='cardname', sortDir=${reverseSortDir})}"
+                >
+                  카드명
+                  <span
+                    th:if="${sortField == 'cardname'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>속성</th>
+              <th>종족</th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='level', sortDir=${reverseSortDir})}"
+                >
+                  레벨
+                  <span
+                    th:if="${sortField == 'level'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='atk', sortDir=${reverseSortDir})}"
+                >
+                  공격력
+                  <span
+                    th:if="${sortField == 'atk'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='def', sortDir=${reverseSortDir})}"
+                >
+                  수비력
+                  <span
+                    th:if="${sortField == 'def'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+
+              <th class="text-col">텍스트</th>
+
+              <th>
+                <a
+                  th:href="@{/showme/selectAll(sortField='releasedate', sortDir=${reverseSortDir})}"
+                >
+                  발매일
+                  <span
+                    th:if="${sortField == 'releasedate'}"
+                    th:text="${sortDir == 'asc' ? '▲' : '▼'}"
+                  ></span>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              th:if="${boosterpackResponses == null or boosterpackResponses.isEmpty()}"
+            >
+              <td colspan="15" style="padding: 30px; font-weight: bold">
+                조회 결과가 없습니다
+              </td>
+            </tr>
+            <tr
+              th:if="${boosterpackResponses}"
+              th:each="boosterpackResponses, status : ${boosterpackResponses}"
+            >
+              <td th:text="${status.count}"></td>
+              <td th:text="${boosterpackResponses.packname}"></td>
+              <td th:text="${boosterpackResponses.id}"></td>
+              <td th:text="${boosterpackResponses.cardid}"></td>
+              <td th:text="${boosterpackResponses.rarity}"></td>
+              <td th:text="${boosterpackResponses.cardtype}"></td>
+              <td th:text="${boosterpackResponses.type}"></td>
+              <td>
+                <a
+                  th:href="@{/showme/searchResult?cardname={viewcardname}(viewcardname=${boosterpackResponses.cardname})}"
+                  th:text="${boosterpackResponses.cardname}"
+                ></a>
+              </td>
+              <td th:text="${boosterpackResponses.element}"></td>
+              <td th:text="${boosterpackResponses.race}"></td>
+              <td th:text="${boosterpackResponses.level}"></td>
+              <td th:text="${boosterpackResponses.atk}"></td>
+              <td th:text="${boosterpackResponses.def}"></td>
+              <td th:text="${boosterpackResponses.text}" class="text-col"></td>
+              <td th:text="${boosterpackResponses.releasedate}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="copyright">
+          <p>&copy; 2026 BoosterPack Wiki Project. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
