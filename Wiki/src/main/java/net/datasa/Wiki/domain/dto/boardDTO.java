@@ -30,4 +30,5 @@ public class boardDTO {
 	private Integer dislikeCount;
 	private Integer deckId;
 	private String deckName;
+	private Integer replyCount;
 }

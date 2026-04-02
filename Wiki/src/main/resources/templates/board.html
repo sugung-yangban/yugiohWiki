@@ -10,11 +10,7 @@
     <header class="site-header">
       <div class="logo-area">
         <a th:href="@{/}">
-          <img
-            th:src="@{/img/KakaoTalk_20251203_134937469.jpg}"
-            alt="로고"
-            class="logo-img"
-          />
+          <img th:src="@{/img/wiki_logo.webp}" alt="로고" class="logo-img" />
           WikiMain
         </a>
       </div>
@@ -31,6 +27,29 @@
       <div class="board-header">
         <h2>듀얼리스트 게시판</h2>
         <p>자유로운 이야기 가능</p>
+        <div class="search-area">
+          <form th:action="@{/board/list}" method="get">
+            <select name="searchType" class="search-select">
+              <option value="title" th:selected="${searchType == 'title'}">
+                제목
+              </option>
+              <option value="content" th:selected="${searchType == 'content'}">
+                내용
+              </option>
+              <option value="writer" th:selected="${searchType == 'writer'}">
+                작성자
+              </option>
+            </select>
+
+            <input
+              type="text"
+              name="searchWord"
+              th:value="${searchWord}"
+              placeholder="검색어를 입력해주세요"
+              class="search-input"
+            /><button type="submit" class="list-btn search-btn">검색</button>
+          </form>
+        </div>
       </div>
 
       <div class="board-list-wrapper">
@@ -52,11 +71,20 @@
             <tr th:each="board : ${boardList}">
               <td th:text="${board.boardId}">1</td>
               <td class="td-title">
-                <a
-                  th:href="@{/board/read(boardId=${board.boardId})}"
-                  th:text="${board.title}"
-                >
-                  게시글 제목 예시
+                <a th:href="@{/board/read(boardId=${board.boardId})}">
+                  <span th:text="${board.title}">게시글 제목 예시</span>
+
+                  <span
+                    th:if="${board.replyCount != null and board.replyCount > 0}"
+                    th:text="'[' + ${board.replyCount} + ']'"
+                    style="
+                      color: #dc3545;
+                      font-weight: bold;
+                      margin-left: 5px;
+                      font-size: 0.9em;
+                    "
+                  >
+                  </span>
                 </a>
               </td>
               <td th:text="${board.writer}">작성자명</td>
@@ -73,12 +101,27 @@
       </div>
 
       <div class="board-footer">
-        <div class="pagination">
-          <a href="#" class="page-btn">&lt;</a>
-          <a href="#" class="page-btn active">1</a>
-          <a href="#" class="page-btn">2</a>
-          <a href="#" class="page-btn">3</a>
-          <a href="#" class="page-btn">&gt;</a>
+        <div class="pagination" th:if="${boardList.totalPages > 0}">
+          <a
+            th:if="${!boardList.first}"
+            th:href="@{/board/list(page=${boardList.number - 1 }, searchType=${searchType}, searchWord=${searchWord})}"
+            class="page-btn"
+            >&lt;</a
+          >
+          <a
+            th:each="pageNum : ${#numbers.sequence(0, boardList.totalPages - 1)}"
+            th:href="@{/board/list(page=${pageNum}, searchType=${searchType}, searchWord=${searchWord})}"
+            th:text="${pageNum + 1}"
+            th:classappend="${pageNum == boardList.number} ? 'active' : ''"
+            class="page-btn"
+          >
+          </a>
+          <a
+            th:if="${!boardList.last}"
+            th:href="@{/board/list(page=${boardList.number + 1}, searchType=${searchType}, searchWord=${searchWord})}"
+            class="page-btn"
+            >&gt;</a
+          >
         </div>
 
         <div class="btn-area">

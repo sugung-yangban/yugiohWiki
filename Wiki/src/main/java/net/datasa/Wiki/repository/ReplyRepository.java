@@ -10,4 +10,5 @@ import java.util.List;
 public interface ReplyRepository extends JpaRepository<Reply, Integer> {
 	List<Reply> findByBoard_BoardIdOrderByCreatedDateAsc(Integer boardId);
 	List<Reply> findByBoard_BoardIdAndParentReplyIsNullOrderByCreatedDateAsc(Integer boardId);
+	int countByBoard_BoardId(Integer boardId);
 }

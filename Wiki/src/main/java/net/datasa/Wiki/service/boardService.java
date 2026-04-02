@@ -83,9 +83,27 @@ public class boardService {
 		log.info("게시글 작성 완료: {}", savedBoard.getBoardId());
 	}
 	
-	public Page<boardDTO> getBoardList(Integer page){
+	public Page<boardDTO> getBoardList(Integer page, String searchType, String searchWord){
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC,"createdDate"));
 		Page<board> boardPage = boardRepository.findAllByOrderByCreatedDateDesc(pageable);
+		
+		if (searchWord == null || searchWord.trim().isEmpty()){
+			boardPage = boardRepository.findAllByOrderByCreatedDateDesc(pageable);
+		} else {
+			switch (searchType){
+				case "title":
+					boardPage = boardRepository.findByTitleContainingOrderByCreatedDateDesc(searchWord, pageable);
+					break;
+				case "content":
+					boardPage = boardRepository.findByContentContainingOrderByCreatedDateDesc(searchWord, pageable);
+					break;
+				case "writer":
+					boardPage = boardRepository.findByMember_MemberIdContainingOrderByCreatedDateDesc(searchWord, pageable);
+					break;
+				default:
+					boardPage = boardRepository.findAllByOrderByCreatedDateDesc(pageable);
+			}
+		}
 		
 		return boardPage.map(board -> boardDTO.builder()
 				.boardId(board.getBoardId())
@@ -96,14 +114,18 @@ public class boardService {
 				.originalFile(board.getOriginalFile())
 				.likeCount(recommendRepository.countLike(board.getBoardId()))
 				.dislikeCount(recommendRepository.countDislikes(board.getBoardId()))
+				.replyCount(replyRepository.countByBoard_BoardId(board.getBoardId()))
 				.build());
 	}
-	public boardDTO getBoard(Integer boardId){
+	public boardDTO getBoard(Integer boardId, boolean isViewed){
 		board boardInfo = boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다"));
 		if (boardInfo.getFileList() != null){
 			boardInfo.getFileList().size();
 		}
-		boardInfo.setViewCount(boardInfo.getViewCount()+1);
+		
+		if (!isViewed){
+			boardInfo.setViewCount(boardInfo.getViewCount() + 1);
+		}
 		return boardDTO.builder()
 				.boardId(boardInfo.getBoardId())
 				.writer(boardInfo.getMember().getMemberId())
@@ -113,7 +135,6 @@ public class boardService {
 				.createdDate(boardInfo.getCreatedDate())
 				.originalFile(boardInfo.getOriginalFile())
 				.savedFile(boardInfo.getSavedFile())
-				.fileList(boardInfo.getFileList())
 				.likeCount(recommendRepository.countLike(boardInfo.getBoardId()))
 				.dislikeCount(recommendRepository.countDislikes(boardInfo.getBoardId()))
 				.deckId(boardInfo.getDeckId())

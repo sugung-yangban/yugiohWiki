@@ -1,5 +1,8 @@
 package net.datasa.Wiki.Controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.Wiki.domain.dto.boardDTO;
@@ -107,9 +110,13 @@ public class boardController {
 		return response;
 	}
 	@GetMapping("list")
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page){
-		Page<boardDTO> boardList = boardService.getBoardList(page);
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+					   @RequestParam(value = "searchType", defaultValue = "title") String searchType,
+					   @RequestParam(value = "searchWord", defaultValue = "") String searchWord){
+		Page<boardDTO> boardList = boardService.getBoardList(page, searchType, searchWord);
 		model.addAttribute("boardList", boardList);
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("searchWord", searchWord);
 		return "board";
 	}
 	@GetMapping("write")
@@ -138,7 +145,9 @@ public class boardController {
 		return "redirect:/board/list";
 	}
 	@GetMapping("read")
-	public String read(@RequestParam("boardId") Integer boardId, Model model, Principal principal){
+	public String read(@RequestParam("boardId") Integer boardId, Model model, Principal principal,
+					   HttpServletRequest request,
+					   HttpServletResponse response){
 		int likeCount = recommendRepository.countLike(boardId);
 		int dislikeCount = recommendRepository.countDislikes(boardId);
 		model.addAttribute("likeCount",likeCount);
@@ -160,7 +169,36 @@ public class boardController {
 		}
 		
 		try{
-			boardDTO boardDTO = boardService.getBoard(boardId);
+			Cookie[] cookies = request.getCookies();
+			boolean isViewed = false;
+			
+			if (cookies != null){
+				for (Cookie cookie : cookies){
+					if (cookie.getName().equals("postView")){
+						if (cookie.getValue().contains("[" + boardId + "]")){
+							isViewed = true;
+						}
+						break;
+					}
+				}
+			}
+			if (!isViewed) {
+				String newCookieValue = "[" + boardId + "]";
+				if (cookies != null){
+					for (Cookie cookie : cookies){
+						if (cookie.getName().equals("postView")){
+							newCookieValue = cookie.getValue() + "[" + boardId + "]";
+							break;
+						}
+					}
+				}
+				Cookie newCookie = new Cookie("postView", newCookieValue);
+				newCookie.setPath("/");
+				newCookie.setMaxAge(60 * 60 * 24);
+				response.addCookie(newCookie);
+			}
+			
+			boardDTO boardDTO = boardService.getBoard(boardId, isViewed);
 			model.addAttribute("board",boardDTO);
 			if (boardDTO.getDeckId() != null){
 				try{
@@ -198,7 +236,7 @@ public class boardController {
 	public String updateForm(@RequestParam("boardId") Integer boardId, Model model, Principal principal){
 		String loginId = principal.getName();
 		model.addAttribute("loginUser",loginId);
-		boardDTO board = boardService.getBoard(boardId);
+		boardDTO board = boardService.getBoard(boardId, true);
 		
 		if (!board.getWriter().equals(loginId)){
 			return "redirect:/board/list";

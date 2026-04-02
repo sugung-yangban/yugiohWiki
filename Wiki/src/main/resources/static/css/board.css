@@ -509,3 +509,31 @@ body {
 .widget-card-item:active .click-overlay {
   opacity: 1;
 }
+.search-area {
+  text-align: right;
+  margin-top: 15px;
+}
+.search-select {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.search-select:focus {
+  border-color: #007bff;
+}
+.search-input {
+  padding: 5px;
+  width: 200px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-left: 5px;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #007bff;
+}
+.search-btn {
+  padding: 5px 15px;
+  margin-left: 5px;
+}
